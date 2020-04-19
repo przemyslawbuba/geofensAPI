@@ -21,12 +21,12 @@ public class DeviceController {
         this.deviceRepository = deviceRepository;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = "/device", method = RequestMethod.GET)
     public List<Device> findAllDevice() {
         return deviceRepository.findAll();
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(value = "/device", method = RequestMethod.POST)
     public void addDevice(@RequestBody AddDeviceRequest addDeviceRequest){
         Device device = new Device();
         device.setName(addDeviceRequest.getName());
