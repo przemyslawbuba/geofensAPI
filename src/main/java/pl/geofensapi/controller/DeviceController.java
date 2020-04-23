@@ -12,11 +12,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.tags.Param;
 import pl.geofensapi.entity.Device;
+import pl.geofensapi.entity.Parameters;
 import pl.geofensapi.entity.request.AddDeviceRequest;
+import pl.geofensapi.entity.request.AddParametersRepository;
 import pl.geofensapi.repository.DeviceRepository;
+import pl.geofensapi.repository.ParametersRepository;
+import pl.geofensapi.security.UniqueTextIdentifier;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -25,10 +31,13 @@ public class DeviceController {
 
     @Autowired
     private DeviceRepository deviceRepository;
+    private ParametersRepository parametersRepository;
 
     @Autowired
-    public DeviceController(DeviceRepository deviceRepository) {
+    public DeviceController(DeviceRepository deviceRepository, ParametersRepository parametersRepository) {
+
         this.deviceRepository = deviceRepository;
+        this.parametersRepository = parametersRepository;
     }
 
     @RequestMapping(value = "/list", method= RequestMethod.GET)
@@ -39,9 +48,12 @@ public class DeviceController {
 
     @PostMapping("/device")
     @ApiOperation(value = "Add a device")
-    public void addDevice(@RequestBody AddDeviceRequest addDeviceRequest){
+    public void addDevices(@RequestBody AddDeviceRequest addDeviceRequest){
         Device device = new Device();
         device.setName(addDeviceRequest.getName());
+        device.setToken(UniqueTextIdentifier.getUniqueId());
+        device.setPositionIntervalInMinutes(addDeviceRequest.getPositionIntervalInMinutes());
+        device.setTrackedObjectId(addDeviceRequest.getTrackedObjectId());
         deviceRepository.save(device);
     }
 
@@ -53,6 +65,45 @@ public class DeviceController {
         deviceRepository.delete(device);
         return new ResponseEntity("Product deleted successfully", HttpStatus.OK);
     }
+
+
+    @ApiOperation(value = "Get device")
+    @RequestMapping(value="/device/{id}", method = RequestMethod.GET)
+    public Optional<Device> getDevice(@PathVariable(value = "id") Long id){
+        Device device = new Device();
+        return deviceRepository.findById(id);
+    }
+
+
+    @ApiOperation(value = "Add parameters")
+    @PostMapping("/addParameters")
+    public void addParameters(@RequestBody AddParametersRepository addParametersRepository){
+
+        Device device = new Device();
+        device = deviceRepository.getOne(addParametersRepository.getDevice_id());
+
+        Parameters parameters = new Parameters();
+        parameters.setAcc(addParametersRepository.getAcc());
+        parameters.setAlt(addParametersRepository.getAlt());
+        parameters.setBea(addParametersRepository.getBea());
+        parameters.setLat(addParametersRepository.getLat());
+        parameters.setLongitude(addParametersRepository.getLongitude());
+        parameters.setProv(addParametersRepository.getProv());
+        parameters.setSpd(addParametersRepository.getSpd());
+        parameters.setSat(addParametersRepository.getSat());
+        parameters.setTime(addParametersRepository.getTime());
+        parameters.setSerial(addParametersRepository.getTid());
+        parameters.setTid(addParametersRepository.getTid());
+        parameters.setPlat(addParametersRepository.getPlat());
+        parameters.setPlatVer(addParametersRepository.getPlatVer());
+        parameters.setBat(addParametersRepository.getBat());
+
+        parameters.setDevice(device);
+        parametersRepository.save(parameters);
+
+
+    }
+
 
 
 }
