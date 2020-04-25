@@ -102,8 +102,15 @@ public class DeviceController {
         parameters.setBat(addParametersRepository.getBat());
         parameters.setDevice(device);
         parametersRepository.save(parameters);
+    }
 
-
+    @ApiOperation(value = "Get device with parameters")
+    @RequestMapping(value="/deviceParameters/{id}", method = RequestMethod.GET)
+    public Device getDeviceParameters(@PathVariable(value = "id") Long id){
+        Device device = new Device();
+        Optional<Device> opti = deviceRepository.findById(id);
+        device = deviceRepository.findByIdOrderById(id);
+        return device;
     }
 
 
