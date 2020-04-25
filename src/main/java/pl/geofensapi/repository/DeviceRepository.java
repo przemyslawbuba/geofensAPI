@@ -7,6 +7,8 @@ import pl.geofensapi.entity.Device;
 @Repository
 public interface DeviceRepository extends JpaRepository<Device, Long> {
 
+    Device findByIdOrderById(Long id);
+
 
 
 }

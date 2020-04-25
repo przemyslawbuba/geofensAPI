@@ -69,9 +69,12 @@ public class DeviceController {
 
     @ApiOperation(value = "Get device")
     @RequestMapping(value="/device/{id}", method = RequestMethod.GET)
-    public Optional<Device> getDevice(@PathVariable(value = "id") Long id){
+    public Device getDevice(@PathVariable(value = "id") Long id){
         Device device = new Device();
-        return deviceRepository.findById(id);
+        Optional<Device> opti = deviceRepository.findById(id);
+        device = deviceRepository.findByIdOrderById(id);
+        device.setParameters(null);
+        return device;
     }
 
 
@@ -97,7 +100,6 @@ public class DeviceController {
         parameters.setPlat(addParametersRepository.getPlat());
         parameters.setPlatVer(addParametersRepository.getPlatVer());
         parameters.setBat(addParametersRepository.getBat());
-
         parameters.setDevice(device);
         parametersRepository.save(parameters);
 
