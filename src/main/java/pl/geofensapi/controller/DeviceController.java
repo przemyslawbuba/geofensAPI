@@ -80,7 +80,7 @@ public class DeviceController {
 
     @ApiOperation(value = "Add parameters")
     @PostMapping("/addParameters/{id}")
-    public void addParameters(@RequestBody AddParametersRepository addParametersRepository, @RequestHeader("Bearer") String token, @PathVariable(value = "id") Long id){
+    public boolean addParameters(@RequestBody AddParametersRepository addParametersRepository, @RequestHeader("Bearer") String token, @PathVariable(value = "id") Long id){
 
 
         Device device = new Device();
@@ -105,10 +105,9 @@ public class DeviceController {
             parameters.setBat(addParametersRepository.getBat());
             parameters.setDevice(device);
             parametersRepository.save(parameters);
+            return true;
         }
-
-
-
+        return false;
     }
 
     @ApiOperation(value = "Get device with parameters")
@@ -123,9 +122,5 @@ public class DeviceController {
             return device;
         } else
             return null;
-
     }
-
-
-
 }
