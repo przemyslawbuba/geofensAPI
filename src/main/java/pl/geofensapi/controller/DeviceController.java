@@ -79,38 +79,51 @@ public class DeviceController {
 
 
     @ApiOperation(value = "Add parameters")
-    @PostMapping("/addParameters")
-    public void addParameters(@RequestBody AddParametersRepository addParametersRepository){
+    @PostMapping("/addParameters/{id}")
+    public void addParameters(@RequestBody AddParametersRepository addParametersRepository, @RequestHeader("Bearer") String token, @PathVariable(value = "id") Long id){
+
 
         Device device = new Device();
-        device = deviceRepository.getOne(addParametersRepository.getDevice_id());
+        device = deviceRepository.getOne(id);
+        String deviceToken = device.getToken();
 
-        Parameters parameters = new Parameters();
-        parameters.setAcc(addParametersRepository.getAcc());
-        parameters.setAlt(addParametersRepository.getAlt());
-        parameters.setBea(addParametersRepository.getBea());
-        parameters.setLat(addParametersRepository.getLat());
-        parameters.setLongitude(addParametersRepository.getLongitude());
-        parameters.setProv(addParametersRepository.getProv());
-        parameters.setSpd(addParametersRepository.getSpd());
-        parameters.setSat(addParametersRepository.getSat());
-        parameters.setTime(addParametersRepository.getTime());
-        parameters.setSerial(addParametersRepository.getTid());
-        parameters.setTid(addParametersRepository.getTid());
-        parameters.setPlat(addParametersRepository.getPlat());
-        parameters.setPlatVer(addParametersRepository.getPlatVer());
-        parameters.setBat(addParametersRepository.getBat());
-        parameters.setDevice(device);
-        parametersRepository.save(parameters);
+        if (device.getToken().equals(token)){
+            Parameters parameters = new Parameters();
+            parameters.setAcc(addParametersRepository.getAcc());
+            parameters.setAlt(addParametersRepository.getAlt());
+            parameters.setBea(addParametersRepository.getBea());
+            parameters.setLat(addParametersRepository.getLat());
+            parameters.setLongitude(addParametersRepository.getLongitude());
+            parameters.setProv(addParametersRepository.getProv());
+            parameters.setSpd(addParametersRepository.getSpd());
+            parameters.setSat(addParametersRepository.getSat());
+            parameters.setTime(addParametersRepository.getTime());
+            parameters.setSerial(addParametersRepository.getTid());
+            parameters.setTid(addParametersRepository.getTid());
+            parameters.setPlat(addParametersRepository.getPlat());
+            parameters.setPlatVer(addParametersRepository.getPlatVer());
+            parameters.setBat(addParametersRepository.getBat());
+            parameters.setDevice(device);
+            parametersRepository.save(parameters);
+        }
+
+
+
     }
 
     @ApiOperation(value = "Get device with parameters")
     @RequestMapping(value="/deviceParameters/{id}", method = RequestMethod.GET)
-    public Device getDeviceParameters(@PathVariable(value = "id") Long id){
+    public Device getDeviceParameters(@PathVariable(value = "id") Long id, @RequestHeader("Bearer") String token){
+
         Device device = new Device();
         Optional<Device> opti = deviceRepository.findById(id);
         device = deviceRepository.findByIdOrderById(id);
-        return device;
+        String deviceToken = device.getToken();
+        if (device.getToken().equals(token)){
+            return device;
+        } else
+            return null;
+
     }
 
 

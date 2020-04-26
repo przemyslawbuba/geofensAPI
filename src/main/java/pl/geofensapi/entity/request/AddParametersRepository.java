@@ -4,7 +4,7 @@ import pl.geofensapi.entity.Device;
 
 public class AddParametersRepository {
 
-    private long id;
+
     private String acc;
     private String alt;
     private long bea;
@@ -19,16 +19,9 @@ public class AddParametersRepository {
     private String plat;
     private String platVer;
     private String bat;
-    private long device_id;
 
 
-    public long getId() {
-        return id;
-    }
 
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getAcc() {
         return acc;
@@ -140,13 +133,5 @@ public class AddParametersRepository {
 
     public void setBat(String bat) {
         this.bat = bat;
-    }
-
-    public long getDevice_id() {
-        return device_id;
-    }
-
-    public void setDevice_id(long device_id) {
-        this.device_id = device_id;
     }
 }
