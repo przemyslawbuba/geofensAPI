@@ -80,12 +80,17 @@ public class DeviceController {
 
     @ApiOperation(value = "Add parameters")
     @PostMapping("/addParameters/{id}")
-    public boolean addParameters(@RequestBody AddParametersRepository addParametersRepository, @RequestHeader("Bearer") String token, @PathVariable(value = "id") Long id){
+    @ResponseBody
+    public ResponseEntity<?> addParameters(@RequestBody AddParametersRepository addParametersRepository, @RequestHeader("Bearer") String token, @PathVariable(value = "id") Long id){
 
 
         Device device = new Device();
-        device = deviceRepository.getOne(id);
-        String deviceToken = device.getToken();
+        try {
+            device = deviceRepository.getOne(id);
+            String deviceToken = device.getToken();
+        }catch(Exception e) {
+            return new ResponseEntity<String>("Not Found", HttpStatus.NOT_FOUND);
+        }
 
         if (device.getToken().equals(token)){
             Parameters parameters = new Parameters();
@@ -105,9 +110,10 @@ public class DeviceController {
             parameters.setBat(addParametersRepository.getBat());
             parameters.setDevice(device);
             parametersRepository.save(parameters);
-            return true;
+            return new ResponseEntity<>("OK", HttpStatus.OK);
+        }else {
+            return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
         }
-        return false;
     }
 
     @ApiOperation(value = "Get device with parameters")
